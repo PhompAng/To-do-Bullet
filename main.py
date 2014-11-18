@@ -69,9 +69,9 @@ class App(Frame):
         self.f1 = Frame(self.frame, bg="red", height=100)
         self.title1 = Label(self.frame, text=self.title.get())
         self.message1 = Label(self.frame, text=self.message.get())
-        self.f1.grid(row=self.row, columnspan=4)
-        self.title1.place(in_=self.f1)
-        self.message1.place(in_=self.f1)
+        self.f1.grid(row=self.row, columnspan=4, sticky=W+E)
+        self.title1.place(in_=self.f1, x=10, y=10)
+        self.message1.place(in_=self.f1, x=10, y=30)
 
     def addTask(self):
         self.db = MySQLdb.connect(host="",  # your host, usually localhost
@@ -102,7 +102,7 @@ class App(Frame):
         self.row = 1
 
         Frame.__init__(self, master)
-        self.canvas = Canvas(master, borderwidth=0, background="#ffffff")
+        self.canvas = Canvas(master, borderwidth=0, background="#ffffff", width=350)
         self.frame = Frame(self.canvas, background="#ff0000")
         self.vsb = Scrollbar(
             master, orient="vertical", command=self.canvas.yview)
@@ -118,8 +118,8 @@ class App(Frame):
 
 def main():
     root = Tk()
-    #root.resizable(width=FALSE, height=FALSE)
-    root.geometry("400x600")
+    root.resizable(width=FALSE, height=FALSE)
+    root.geometry("370x600")
     app = App(master=None)
     app.mainloop()
     root.destroy()
