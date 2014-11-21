@@ -17,8 +17,8 @@ class App(Frame):
         self.message.pack()
         self.l = Button(self.t)
         self.l["text"] = self.row
-        self.l["command"] = self.createFrame
-        #self.l["command"] = self.addTask
+        #self.l["command"] = self.createFrame
+        self.l["command"] = self.addTask
         self.l.pack()
 
     def crateWidgets(self):
@@ -33,7 +33,7 @@ class App(Frame):
         self.rowconfigure(0, pad=5, minsize=30)
         self.rowconfigure(1, pad=5, minsize=30)
 
-        #self.rowconfigure(2, pad=5, minsize=30)
+        self.rowconfigure(2, pad=5, minsize=30)
 
         self.new_text = Button(self.frame)
         self.new_text["text"] = "Text"
@@ -64,21 +64,24 @@ class App(Frame):
 
         self.pack()
 
-    def createFrame(self):
+        self.getTask()
+
+    def createFrame(self, title, message):
         self.row += 1
-        self.f1 = Frame(self.frame, bg="red", height=100)
-        self.title1 = Label(self.frame, text=self.title.get())
-        self.message1 = Label(self.frame, text=self.message.get())
+        self.f1 = Frame(self.frame, bg="green", height=100)
+        self.title1 = Label(self.frame, text=title)
+        self.message1 = Label(self.frame, text=message)
         self.f1.grid(row=self.row, columnspan=4, sticky=W+E)
         self.title1.place(in_=self.f1, x=10, y=10)
         self.message1.place(in_=self.f1, x=10, y=30)
 
+    def getTask(self):
+        self.cur.execute("SELECT title, message FROM push WHERE api=%s", [self.api])
+        for row in self.cur.fetchall():
+            print row
+            self.createFrame(row[0], row[1])
+
     def addTask(self):
-        self.db = MySQLdb.connect(host="",  # your host, usually localhost
-                                  user="",  # your username
-                                  passwd="",  # your password
-                                  db="")  # name of the data base
-        self.cur = self.db.cursor()
         self.data = {
             'api': self.api,
             'title': self.title.get(),
@@ -91,13 +94,18 @@ class App(Frame):
                     "VALUES (%(api)s, %(title)s, %(message)s, %(link)s, %(time)s)")
         self.cur.execute(self.add, self.data)
         self.db.commit()
-        self.createFrame()
+        self.createFrame(self.title.get(), self.message.get())
 
     def OnFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __init__(self, master=None):
+        self.db = MySQLdb.connect(host="",  # your host, usually localhost
+                                  user="",  # your username
+                                  passwd="",  # your password
+                                  db="")  # name of the data base
+        self.cur = self.db.cursor()
         self.api = ''
         self.row = 1
 
@@ -109,7 +117,7 @@ class App(Frame):
         self.canvas.configure(yscrollcommand=self.vsb.set)
         self.vsb.pack(side="right", fill="y")
         self.canvas.pack(side="left", fill="both")
-        self.canvas.create_window((0, 0), window=self.frame, tags="self.frame")
+        self.canvas.create_window((0, 0), window=self.frame, anchor=NW)
 
         self.frame.bind("<Configure>", self.OnFrameConfigure)
 
