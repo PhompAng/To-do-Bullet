@@ -12,23 +12,30 @@ class App(Frame):
 
     def newwin(self):
         self.t = Toplevel(self)
-        #self.t.geometry("300x200+120+120")
+        # self.t.geometry("300x200+120+120")
 
         self.title_label = Label(self.t, text="Title")
         self.title_label.grid(row=0, column=0, sticky=W)
         self.title = Entry(self.t)
-        self.title.grid(row=0, column=1, sticky=W)
+        self.title.grid(row=0, column=1, columnspan=2, sticky=W + E)
 
         self.message_label = Label(self.t, text="Message")
         self.message_label.grid(row=1, column=0, sticky=W)
         self.message = Entry(self.t)
-        self.message.grid(row=1, column=1, sticky=W)
+        self.message.grid(row=1, column=1, columnspan=2, sticky=W + E)
+
+        self.datetime_label = Label(self.t, text="Datetime")
+        self.datetime_label.grid(row=2, column=0, sticky=W)
+        self.datetime_date = Entry(self.t)
+        self.datetime_date.grid(row=2, column=1, sticky=W)
+        self.datetime_time = Entry(self.t)
+        self.datetime_time.grid(row=2, column=2, sticky=W)
 
         self.l = Button(self.t)
         self.l["text"] = self.row
         #self.l["command"] = self.createFrame
         self.l["command"] = self.addTask
-        self.l.grid(row=2, columnspan=2, sticky=N+E+W+S)
+        self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
 
     def crateWidgets(self):
 
@@ -79,12 +86,13 @@ class App(Frame):
         self.f1 = Frame(self.frame, bg="green", height=100)
         self.title1 = Label(self.frame, text=title)
         self.message1 = Label(self.frame, text=message)
-        self.f1.grid(row=self.row, columnspan=4, sticky=W+E)
+        self.f1.grid(row=self.row, columnspan=4, sticky=W + E)
         self.title1.place(in_=self.f1, x=10, y=10)
         self.message1.place(in_=self.f1, x=10, y=30)
 
     def getTask(self):
-        self.cur.execute("SELECT title, message FROM task WHERE api=%s", [self.api])
+        self.cur.execute(
+            "SELECT title, message FROM task WHERE api=%s", [self.api])
         for row in self.cur.fetchall():
             print row
             self.createFrame(row[0], row[1])
@@ -104,8 +112,8 @@ class App(Frame):
         self.db.commit()
 
         self.sq3cur.execute("INSERT INTO task "
-                    "(api_key, title, message, link, time) "
-                    "VALUES (:api, :title, :message, :link, :time)", self.data)
+                            "(api_key, title, message, link, time) "
+                            "VALUES (:api, :title, :message, :link, :time)", self.data)
         self.sq3.commit()
 
         self.createFrame(self.title.get(), self.message.get())
@@ -128,7 +136,8 @@ class App(Frame):
         self.row = 1
 
         Frame.__init__(self, master)
-        self.canvas = Canvas(master, borderwidth=0, background="#ffffff", width=350)
+        self.canvas = Canvas(
+            master, borderwidth=0, background="#ffffff", width=350)
         self.frame = Frame(self.canvas, background="#ff0000")
         self.vsb = Scrollbar(
             master, orient="vertical", command=self.canvas.yview)
