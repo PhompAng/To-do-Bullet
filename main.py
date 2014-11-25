@@ -2,6 +2,7 @@ from Tkinter import *
 from ttk import Button, Style
 from datetime import date, datetime, timedelta
 import MySQLdb
+import sqlite3
 #from pushbullet import PushBullet
 
 
@@ -76,7 +77,7 @@ class App(Frame):
         self.message1.place(in_=self.f1, x=10, y=30)
 
     def getTask(self):
-        self.cur.execute("SELECT title, message FROM push WHERE api=%s", [self.api])
+        self.cur.execute("SELECT title, message FROM task WHERE api=%s", [self.api])
         for row in self.cur.fetchall():
             print row
             self.createFrame(row[0], row[1])
@@ -89,11 +90,17 @@ class App(Frame):
             'link': 'https://www.google.com',
             'time': datetime.now(),
         }
-        self.add = ("INSERT INTO push "
+        self.add = ("INSERT INTO task "
                     "(api, title, message, link, time) "
                     "VALUES (%(api)s, %(title)s, %(message)s, %(link)s, %(time)s)")
         self.cur.execute(self.add, self.data)
         self.db.commit()
+
+        self.sq3cur.execute("INSERT INTO task "
+                    "(api_key, title, message, link, time) "
+                    "VALUES (:api, :title, :message, :link, :time)", self.data)
+        self.sq3.commit()
+
         self.createFrame(self.title.get(), self.message.get())
 
     def OnFrameConfigure(self, event):
@@ -106,6 +113,10 @@ class App(Frame):
                                   passwd="",  # your password
                                   db="")  # name of the data base
         self.cur = self.db.cursor()
+
+        self.sq3 = sqlite3.connect('db.db')
+        self.sq3cur = self.sq3.cursor()
+
         self.api = ''
         self.row = 1
 
