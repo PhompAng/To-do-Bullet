@@ -12,15 +12,23 @@ class App(Frame):
 
     def newwin(self):
         self.t = Toplevel(self)
+        #self.t.geometry("300x200+120+120")
+
+        self.title_label = Label(self.t, text="Title")
+        self.title_label.grid(row=0, column=0, sticky=W)
         self.title = Entry(self.t)
-        self.title.pack()
+        self.title.grid(row=0, column=1, sticky=W)
+
+        self.message_label = Label(self.t, text="Message")
+        self.message_label.grid(row=1, column=0, sticky=W)
         self.message = Entry(self.t)
-        self.message.pack()
+        self.message.grid(row=1, column=1, sticky=W)
+
         self.l = Button(self.t)
         self.l["text"] = self.row
         #self.l["command"] = self.createFrame
         self.l["command"] = self.addTask
-        self.l.pack()
+        self.l.grid(row=2, columnspan=2, sticky=N+E+W+S)
 
     def crateWidgets(self):
 
@@ -33,7 +41,6 @@ class App(Frame):
 
         self.rowconfigure(0, pad=5, minsize=30)
         self.rowconfigure(1, pad=5, minsize=30)
-
         self.rowconfigure(2, pad=5, minsize=30)
 
         self.new_text = Button(self.frame)
@@ -138,7 +145,7 @@ class App(Frame):
 def main():
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
-    root.geometry("370x600")
+    root.geometry("370x600+150+150")
     app = App(master=None)
     app.mainloop()
     root.destroy()
