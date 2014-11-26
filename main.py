@@ -19,16 +19,24 @@ class App(Frame):
         self.title = Entry(self.t)
         self.title.grid(row=0, column=1, columnspan=2, sticky=W + E)
 
+
         self.message_label = Label(self.t, text="Message")
         self.message_label.grid(row=1, column=0, sticky=W)
         self.message = Entry(self.t)
         self.message.grid(row=1, column=1, columnspan=2, sticky=W + E)
 
+
         self.datetime_label = Label(self.t, text="Datetime")
         self.datetime_label.grid(row=2, column=0, sticky=W)
-        self.datetime_date = Entry(self.t)
+
+        self.datetime_date_placehold = StringVar()
+        self.datetime_date_placehold.set("2014-10-11")
+        self.datetime_date = Entry(self.t, textvariable=self.datetime_date_placehold)
         self.datetime_date.grid(row=2, column=1, sticky=W)
-        self.datetime_time = Entry(self.t)
+
+        self.datetime_time_placehold = StringVar()
+        self.datetime_time_placehold.set("14:00")
+        self.datetime_time = Entry(self.t, textvariable=self.datetime_time_placehold)
         self.datetime_time.grid(row=2, column=2, sticky=W)
 
         self.l = Button(self.t)
@@ -81,21 +89,25 @@ class App(Frame):
 
         self.getTask()
 
-    def createFrame(self, title, message):
+    def createFrame(self, title, message, datetime):
         self.row += 1
         self.f1 = Frame(self.frame, bg="green", height=100)
+        self.f1.grid(row=self.row, columnspan=4, sticky=W + E)
+
         self.title1 = Label(self.frame, text=title)
         self.message1 = Label(self.frame, text=message)
-        self.f1.grid(row=self.row, columnspan=4, sticky=W + E)
+        self.datetime1 = Label(self.frame, text=datetime)
+
         self.title1.place(in_=self.f1, x=10, y=10)
         self.message1.place(in_=self.f1, x=10, y=30)
+        self.datetime1.place(in_=self.f1, x=10, y=50)
 
     def getTask(self):
         self.cur.execute(
-            "SELECT title, message FROM task WHERE api=%s", [self.api])
+            "SELECT title, message, time FROM task WHERE api=%s", [self.api])
         for row in self.cur.fetchall():
             print row
-            self.createFrame(row[0], row[1])
+            self.createFrame(row[0], row[1], row[2])
 
     def addTask(self):
         self.data = {
@@ -103,7 +115,7 @@ class App(Frame):
             'title': self.title.get(),
             'message': self.message.get(),
             'link': 'https://www.google.com',
-            'time': datetime.now(),
+            'time': self.datetime_date.get() + ' ' + self.datetime_time.get() + ':00',
         }
         self.add = ("INSERT INTO task "
                     "(api, title, message, link, time) "
@@ -116,7 +128,7 @@ class App(Frame):
                             "VALUES (:api, :title, :message, :link, :time)", self.data)
         self.sq3.commit()
 
-        self.createFrame(self.title.get(), self.message.get())
+        self.createFrame(self.title.get(), self.message.get(), self.datetime_date.get() + ' ' + self.datetime_time.get() + ':00')
 
     def OnFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
