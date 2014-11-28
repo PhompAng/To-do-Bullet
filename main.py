@@ -92,7 +92,7 @@ class App(Frame):
     def createFrame(self, title, message, datetime):
         self.row += 1
         self.f1 = Frame(self.frame, bg="white")
-        self.f1.grid(row=self.row, columnspan=4, sticky=W + E)
+        self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
         self.title1 = Label(
             self.frame, text=title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
@@ -153,8 +153,8 @@ class App(Frame):
 
         Frame.__init__(self, master)
         self.canvas = Canvas(
-            master, borderwidth=0, background="#ffffff", width=350)
-        self.frame = Frame(self.canvas, background="#ff0000")
+            master, borderwidth=0, background="#e5e5e5", width=350)
+        self.frame = Frame(self.canvas, background="#b4b4b4")
         self.vsb = Scrollbar(
             master, orient="vertical", command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vsb.set)
