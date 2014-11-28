@@ -10,7 +10,7 @@ class App(Frame):
 
     """docstring for App"""
 
-    def newwin(self):
+    def newtext(self):
         self.t = Toplevel(self)
         # self.t.geometry("300x200+120+120")
 
@@ -34,16 +34,65 @@ class App(Frame):
         self.datetime_date.grid(row=2, column=1, sticky=W)
 
         self.datetime_time_placehold = StringVar()
-        self.datetime_time_placehold.set("14:00")
+        self.datetime_time_placehold.set("13:37")
         self.datetime_time = Entry(
             self.t, textvariable=self.datetime_time_placehold)
         self.datetime_time.grid(row=2, column=2, sticky=W)
 
         self.l = Button(self.t)
         self.l["text"] = self.row
-        #self.l["command"] = self.createFrame
-        self.l["command"] = self.addTask
+        self.l["command"] = self.get_newtext
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
+
+    def get_newtext(self):
+        title=self.title.get()
+        message=self.message.get()
+        link=''
+        date=self.datetime_date.get()
+        time=self.datetime_time.get()
+        self.addTask(title, message, link, date, time)
+
+    def newlink(self):
+        self.t = Toplevel(self)
+        # self.t.geometry("300x200+120+120")
+
+        self.title_label = Label(self.t, text="Title")
+        self.title_label.grid(row=0, column=0, sticky=W)
+        self.title = Entry(self.t)
+        self.title.grid(row=0, column=1, columnspan=2, sticky=W + E)
+
+        self.link_label = Label(self.t, text="Link")
+        self.link_label.grid(row=1, column=0, sticky=W)
+        self.link = Entry(self.t)
+        self.link.grid(row=1, column=1, columnspan=2, sticky=W + E)
+
+        self.datetime_label = Label(self.t, text="Datetime")
+        self.datetime_label.grid(row=2, column=0, sticky=W)
+
+        self.datetime_date_placehold = StringVar()
+        self.datetime_date_placehold.set("2014-10-11")
+        self.datetime_date = Entry(
+            self.t, textvariable=self.datetime_date_placehold)
+        self.datetime_date.grid(row=2, column=1, sticky=W)
+
+        self.datetime_time_placehold = StringVar()
+        self.datetime_time_placehold.set("13:37")
+        self.datetime_time = Entry(
+            self.t, textvariable=self.datetime_time_placehold)
+        self.datetime_time.grid(row=2, column=2, sticky=W)
+
+        self.l = Button(self.t)
+        self.l["text"] = self.row
+        self.l["command"] = self.get_newlink
+        self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
+
+    def get_newlink(self):
+        title=self.title.get()
+        message=''
+        link=self.link.get()
+        date=self.datetime_date.get()
+        time=self.datetime_time.get()
+        self.addTask(title, message, link, date, time)
 
     def crateWidgets(self):
 
@@ -60,25 +109,25 @@ class App(Frame):
 
         self.new_text = Button(self.frame)
         self.new_text["text"] = "Text"
-        self.new_text["command"] = self.newwin
+        self.new_text["command"] = self.newtext
 
         self.new_text.grid(row=0, sticky=N + S + E + W, column=0)
 
         self.new_list = Button(self.frame)
         self.new_list["text"] = "List"
-        self.new_list["command"] = self.newwin
+        self.new_list["command"] = self.newtext
 
         self.new_list.grid(row=0, sticky=N + S + E + W, column=1)
 
         self.new_link = Button(self.frame)
         self.new_link["text"] = "Link"
-        self.new_link["command"] = self.newwin
+        self.new_link["command"] = self.newlink
 
         self.new_link.grid(row=0, sticky=N + S + E + W, column=2)
 
         self.new_file = Button(self.frame)
         self.new_file["text"] = "File"
-        self.new_file["command"] = self.newwin
+        self.new_file["command"] = self.newtext
 
         self.new_file.grid(row=0, sticky=N + S + E + W, column=3)
 
@@ -89,7 +138,7 @@ class App(Frame):
 
         self.getTask()
 
-    def createFrame(self, title, message, datetime):
+    def createFrame(self, title, message, link, datetime):
         self.row += 1
         self.f1 = Frame(self.frame, bg="white")
         self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
@@ -99,7 +148,7 @@ class App(Frame):
         self.datetime1 = Label(
             self.frame, text=datetime, bg='white', font='serif 10')
         self.message1 = Label(
-            self.frame, text=message, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
+            self.frame, text=message+link, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
 
         self.title1.pack(in_=self.f1, ancho=W, fill=Y)
         self.message1.pack(in_=self.f1, anchor=SW, fill=Y)
@@ -107,18 +156,19 @@ class App(Frame):
 
     def getTask(self):
         self.cur.execute(
-            "SELECT title, message, time FROM task WHERE api=%s", [self.api])
+            "SELECT title, message, link, time FROM task WHERE api=%s", [self.api])
         for row in self.cur.fetchall():
             print row
-            self.createFrame(row[0], row[1], row[2])
+            self.createFrame(row[0], row[1], row[2], row[3])
 
-    def addTask(self):
+    def addTask(self, title, message, link, date, time):
+        print title, message, link, date, time
         self.data = {
             'api': self.api,
-            'title': self.title.get(),
-            'message': self.message.get(),
-            'link': 'https://www.google.com',
-            'time': self.datetime_date.get() + ' ' + self.datetime_time.get() + ':00',
+            'title': title,
+            'message': message,
+            'link': link,
+            'time': date + ' ' + time + ':00',
         }
         self.add = ("INSERT INTO task "
                     "(api, title, message, link, time) "
@@ -131,8 +181,7 @@ class App(Frame):
                             "VALUES (:api, :title, :message, :link, :time)", self.data)
         self.sq3.commit()
 
-        self.createFrame(self.title.get(), self.message.get(
-        ), self.datetime_date.get() + ' ' + self.datetime_time.get() + ':00')
+        self.createFrame(title, message, link, date + ' ' + time + ':00')
 
     def OnFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
