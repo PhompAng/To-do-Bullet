@@ -5,6 +5,22 @@ import MySQLdb
 import sqlite3
 #from pushbullet import PushBullet
 
+class Task(Frame):
+    """docstring for Task"""
+    def __init__(self, parent, title, message, link, datetime):
+        Frame.__init__(self, parent, bg="white")
+        #self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
+
+        self.title1 = Label(
+            self, text=title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
+        self.datetime1 = Label(
+            self, text=datetime, bg='white', font='serif 10')
+        self.message1 = Label(
+            self, text=message+link, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
+
+        self.title1.pack(in_=self, ancho=W, fill=Y)
+        self.message1.pack(in_=self, anchor=SW, fill=Y)
+        self.datetime1.pack(in_=self, anchor=SE)
 
 class App(Frame):
 
@@ -140,19 +156,21 @@ class App(Frame):
 
     def createFrame(self, title, message, link, datetime):
         self.row += 1
-        self.f1 = Frame(self.frame, bg="white")
-        self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
+        # self.f1 = Frame(self.frame, bg="white")
+        # self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
-        self.title1 = Label(
-            self.frame, text=title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
-        self.datetime1 = Label(
-            self.frame, text=datetime, bg='white', font='serif 10')
-        self.message1 = Label(
-            self.frame, text=message+link, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
+        # self.title1 = Label(
+        #     self.frame, text=title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
+        # self.datetime1 = Label(
+        #     self.frame, text=datetime, bg='white', font='serif 10')
+        # self.message1 = Label(
+        #     self.frame, text=message+link, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
 
-        self.title1.pack(in_=self.f1, ancho=W, fill=Y)
-        self.message1.pack(in_=self.f1, anchor=SW, fill=Y)
-        self.datetime1.pack(in_=self.f1, anchor=SE)
+        # self.title1.pack(in_=self.f1, ancho=W, fill=Y)
+        # self.message1.pack(in_=self.f1, anchor=SW, fill=Y)
+        # self.datetime1.pack(in_=self.f1, anchor=SE)
+        Task(self.frame, title, message, link, datetime).grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
+
 
     def getTask(self):
         self.cur.execute(
