@@ -236,6 +236,15 @@ def main():
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
     root.geometry("370x600+150+150")
+
+    menubar = Menu(root)
+    menu = Menu(menubar, tearoff=0)
+    menu.add_command(label="Setting")
+    menu.add_command(label="Exit", command=root.quit)
+
+    menubar.add_cascade(label="File", menu=menu)
+
+    root.config(menu=menubar)
     app = App(master=None)
     app.mainloop()
     root.destroy()
