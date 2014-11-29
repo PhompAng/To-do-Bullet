@@ -1,9 +1,7 @@
 from Tkinter import *
 from ttk import Button, Style
-from datetime import date, datetime, timedelta
 import MySQLdb
 import sqlite3
-#from pushbullet import PushBullet
 
 class Task(Frame):
     """docstring for Task"""
