@@ -23,6 +23,14 @@ class Task(Frame):
 class App(Frame):
 
     """docstring for App"""
+    def setting(self):
+        self.s = Toplevel(self)
+        # self.t.geometry("300x200+120+120")
+
+        self.api_label = Label(self.s, text="API Key")
+        self.api_label.grid(row=0, column=0, sticky=W)
+        self.api = Entry(self.s)
+        self.api.grid(row=0, column=1, columnspan=2, sticky=W + E)
 
     def newtext(self, task_type):
         self.task_type = task_type
@@ -189,22 +197,31 @@ class App(Frame):
 
         self.frame.bind("<Configure>", self.OnFrameConfigure)
 
+        self.menubar = Menu(self.master)
+        self.master.config(menu=self.menubar)
+
+        filemenu = Menu(self.menubar)
+        filemenu.add_command(label="Setting", command=self.setting)
+        self.menubar.add_cascade(label="File", menu=filemenu)
+
         self.crateWidgets()
 
+def run_setting():
+    setting = Setting()
 
 def main():
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
     root.geometry("370x600+150+150")
 
-    menubar = Menu(root)
-    menu = Menu(menubar, tearoff=0)
-    menu.add_command(label="Setting")
-    menu.add_command(label="Exit", command=root.quit)
+    # menubar = Menu(root)
+    # menu = Menu(menubar, tearoff=0)
+    # menu.add_command(label="Setting", command=run_setting)
+    # menu.add_command(label="Exit", command=root.quit)
 
-    menubar.add_cascade(label="File", menu=menu)
+    # menubar.add_cascade(label="File", menu=menu)
 
-    root.config(menu=menubar)
+    #root.config(menu=menubar)
     app = App(master=None)
     app.mainloop()
     root.destroy()
