@@ -25,7 +25,12 @@ class App(Frame):
     """docstring for App"""
     def save(self):
         print self.api.get()
+        self.fo = open("api.txt", "w")
+        self.fo.write(self.api.get())
+        self.fo.close()
+        #print self.fo.read()
         self.s.destroy()
+        self.getTask()
 
     def setting(self):
         self.s = Toplevel(self)
@@ -177,6 +182,8 @@ class App(Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __init__(self, master=None):
+        self.fo = open("api.txt", "r")
+
         self.db = MySQLdb.connect(host="",  # your host, usually localhost
                                   user="",  # your username
                                   passwd="",  # your password
@@ -188,6 +195,15 @@ class App(Frame):
 
         #self.api = ''
         self.api = StringVar()
+        print self.fo.read()
+        self.fo.seek(0)
+        if self.fo.read(1):
+            self.fo.seek(0)
+            s = self.fo.read()
+            print s
+            self.api.set(s)
+        self.fo.close()
+        print self.api.get()
         #self.api.trace("w", self.save)
         self.row = 1
 
