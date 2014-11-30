@@ -23,14 +23,20 @@ class Task(Frame):
 class App(Frame):
 
     """docstring for App"""
+    def save(self):
+        print self.api.get()
+        self.s.destroy()
+
     def setting(self):
         self.s = Toplevel(self)
-        # self.t.geometry("300x200+120+120")
 
         self.api_label = Label(self.s, text="API Key")
         self.api_label.grid(row=0, column=0, sticky=W)
-        self.api = Entry(self.s)
-        self.api.grid(row=0, column=1, columnspan=2, sticky=W + E)
+        self.api_entry = Entry(self.s, textvariable=self.api)
+        self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E)
+
+        self.save = Button(self.s, text="Save", command=self.save)
+        self.save.grid(row=1, column=0, columnspan=3, sticky=W+E)
 
     def newtext(self, task_type):
         self.task_type = task_type
@@ -139,7 +145,7 @@ class App(Frame):
 
     def getTask(self):
         self.cur.execute(
-            "SELECT title, message, task_type, time FROM task WHERE api=%s", [self.api])
+            "SELECT title, message, task_type, time FROM task WHERE api=%s", [self.api.get()])
         for row in self.cur.fetchall():
             print row
             self.createFrame(row[0], row[1], row[2], row[3])
@@ -147,7 +153,7 @@ class App(Frame):
     def addTask(self, title, message, task_type, date, time):
         print title, message, task_type, date, time
         self.data = {
-            'api': self.api,
+            'api': self.api.get(),
             'title': title,
             'message': message,
             'task_type': task_type,
@@ -180,7 +186,9 @@ class App(Frame):
         self.sq3 = sqlite3.connect('db.db')
         self.sq3cur = self.sq3.cursor()
 
-        self.api = ''
+        #self.api = ''
+        self.api = StringVar()
+        #self.api.trace("w", self.save)
         self.row = 1
 
         Frame.__init__(self, master)
