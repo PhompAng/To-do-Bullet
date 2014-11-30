@@ -3,8 +3,11 @@ from ttk import Button, Style
 import MySQLdb
 import sqlite3
 
+
 class Task(Frame):
+
     """docstring for Task"""
+
     def __init__(self, parent, title, message, task_type, datetime):
         Frame.__init__(self, parent, bg="white")
         #self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
@@ -14,21 +17,32 @@ class Task(Frame):
         self.datetime1 = Label(
             self, text=datetime, bg='white', font='serif 10')
         self.message1 = Label(
-            self, text=message+task_type, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
+            self, text=message + task_type, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
 
         self.title1.pack(in_=self, ancho=W, fill=Y)
         self.message1.pack(in_=self, anchor=SW, fill=Y)
         self.datetime1.pack(in_=self, anchor=SE)
 
+
 class App(Frame):
 
     """docstring for App"""
+
+    def paste(self):
+        self.entry.event_generate('<Control-v>')
+
+    def cut(self):
+        self.entry.event_generate('<Control-x>')
+
+    def copy(self):
+        self.entry.event_generate('<Control-c>')
+
     def save(self):
         print self.api.get()
         self.fo = open("api.txt", "w")
         self.fo.write(self.api.get())
         self.fo.close()
-        #print self.fo.read()
+        # print self.fo.read()
         self.s.destroy()
         self.getTask()
 
@@ -41,7 +55,7 @@ class App(Frame):
         self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E)
 
         self.save = Button(self.s, text="Save", command=self.save)
-        self.save.grid(row=1, column=0, columnspan=3, sticky=W+E)
+        self.save.grid(row=1, column=0, columnspan=3, sticky=W + E)
 
     def newtext(self, task_type):
         self.task_type = task_type
@@ -79,11 +93,11 @@ class App(Frame):
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
 
     def get_newtext(self):
-        title=self.title.get()
-        message=self.message.get()
+        title = self.title.get()
+        message = self.message.get()
         task_type = self.task_type
-        date=self.datetime_date.get()
-        time=self.datetime_time.get()
+        date = self.datetime_date.get()
+        time = self.datetime_time.get()
         self.addTask(title, message, task_type, date, time)
 
     def crateWidgets(self):
@@ -140,13 +154,14 @@ class App(Frame):
         # self.datetime1 = Label(
         #     self.frame, text=datetime, bg='white', font='serif 10')
         # self.message1 = Label(
-        #     self.frame, text=message+link, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
+        # self.frame, text=message+link, bg="white", justify=LEFT, font='serif
+        # 10', wraplengt=300)
 
         # self.title1.pack(in_=self.f1, ancho=W, fill=Y)
         # self.message1.pack(in_=self.f1, anchor=SW, fill=Y)
         # self.datetime1.pack(in_=self.f1, anchor=SE)
-        Task(self.frame, title, message, task_type, datetime).grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
-
+        Task(self.frame, title, message, task_type, datetime).grid(
+            row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
     def getTask(self):
         self.cur.execute(
@@ -230,8 +245,10 @@ class App(Frame):
 
         self.crateWidgets()
 
+
 def run_setting():
     setting = Setting()
+
 
 def main():
     root = Tk()
@@ -245,7 +262,7 @@ def main():
 
     # menubar.add_cascade(label="File", menu=menu)
 
-    #root.config(menu=menubar)
+    # root.config(menu=menubar)
     app = App(master=None)
     app.mainloop()
     root.destroy()
