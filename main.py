@@ -8,12 +8,12 @@ class Task(Frame):
 
     """docstring for Task"""
 
-    def __init__(self, parent, title, message, task_type, datetime):
+    def __init__(self, parent, id, title, message, task_type, datetime):
         Frame.__init__(self, parent, bg="white")
         #self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
         self.title1 = Label(
-            self, text=title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
+            self, text=str(id) + '. ' + title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
         self.datetime1 = Label(
             self, text=datetime, bg='white', font='serif 10')
         self.message1 = Label(
@@ -144,7 +144,7 @@ class App(Frame):
 
         self.getTask()
 
-    def createFrame(self, title, message, task_type, datetime):
+    def createFrame(self, id, title, message, task_type, datetime):
         self.row += 1
         # self.f1 = Frame(self.frame, bg="white")
         # self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
@@ -160,15 +160,15 @@ class App(Frame):
         # self.title1.pack(in_=self.f1, ancho=W, fill=Y)
         # self.message1.pack(in_=self.f1, anchor=SW, fill=Y)
         # self.datetime1.pack(in_=self.f1, anchor=SE)
-        Task(self.frame, title, message, task_type, datetime).grid(
+        Task(self.frame, id, title, message, task_type, datetime).grid(
             row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
     def getTask(self):
         self.cur.execute(
-            "SELECT title, message, task_type, time FROM task WHERE api=%s", [self.api.get()])
+            "SELECT id, title, message, task_type, time FROM task WHERE api=%s", [self.api.get()])
         for row in self.cur.fetchall():
             print row
-            self.createFrame(row[0], row[1], row[2], row[3])
+            self.createFrame(row[0], row[1], row[2], row[3], row[4])
 
     def addTask(self, title, message, task_type, date, time):
         print title, message, task_type, date, time
