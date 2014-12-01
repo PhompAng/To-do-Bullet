@@ -3,6 +3,27 @@ from ttk import Button, Style
 import MySQLdb
 import sqlite3
 
+class Api(object):
+    """docstring for api"""
+    def __init__(self):
+        fo = open("api.txt", "r")
+        self.api = StringVar()
+        fo.seek(0)
+        if fo.read(1):
+            fo.seek(0)
+            s = fo.read()
+            self.api.set(s)
+        fo.close()
+
+    def set_api(self, value):
+        fo = open("api.txt", "w")
+        fo.write(value)
+        fo.close()
+        self.api.set(value)
+
+    def get_api(self):
+        return self.api.get()
+
 
 class Task(Frame):
 
@@ -38,24 +59,22 @@ class App(Frame):
         self.entry.event_generate('<Control-c>')
 
     def save(self):
-        print self.api.get()
-        self.fo = open("api.txt", "w")
-        self.fo.write(self.api.get())
-        self.fo.close()
-        # print self.fo.read()
+        api = Api()
+        api.set_api(self.api_entry.get())
         self.s.destroy()
         self.getTask()
 
     def setting(self):
+        api = Api()
         self.s = Toplevel(self)
-
+        val = StringVar()
+        val.set(api.get_api())
         self.api_label = Label(self.s, text="API Key")
         self.api_label.grid(row=0, column=0, sticky=W)
-        self.api_entry = Entry(self.s, textvariable=self.api)
+        self.api_entry = Entry(self.s, textvariable=val)
         self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E)
-
-        self.save = Button(self.s, text="Save", command=self.save)
-        self.save.grid(row=1, column=0, columnspan=3, sticky=W + E)
+        self.save_btn = Button(self.s, text="Save", command=self.save)
+        self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E)
 
     def newtext(self, task_type):
         self.task_type = task_type
@@ -164,8 +183,10 @@ class App(Frame):
             row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
     def getTask(self):
+        api = Api()
+        self.api = api.get_api()
         self.cur.execute(
-            "SELECT id, title, message, task_type, time FROM task WHERE api=%s", [self.api.get()])
+            "SELECT id, title, message, task_type, time FROM task WHERE api=%s", [self.api])
         for row in self.cur.fetchall():
             print row
             self.createFrame(row[0], row[1], row[2], row[3], row[4])
@@ -173,7 +194,7 @@ class App(Frame):
     def addTask(self, title, message, task_type, date, time):
         print title, message, task_type, date, time
         self.data = {
-            'api': self.api.get(),
+            'api': self.api,
             'title': title,
             'message': message,
             'task_type': task_type,
@@ -197,7 +218,7 @@ class App(Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __init__(self, master=None):
-        self.fo = open("api.txt", "r")
+
 
         self.db = MySQLdb.connect(host="",  # your host, usually localhost
                                   user="",  # your username
@@ -208,18 +229,9 @@ class App(Frame):
         self.sq3 = sqlite3.connect('db.db')
         self.sq3cur = self.sq3.cursor()
 
+        api = Api()
+        self.api = api.get_api()
         #self.api = ''
-        self.api = StringVar()
-        print self.fo.read()
-        self.fo.seek(0)
-        if self.fo.read(1):
-            self.fo.seek(0)
-            s = self.fo.read()
-            print s
-            self.api.set(s)
-        self.fo.close()
-        print self.api.get()
-        #self.api.trace("w", self.save)
         self.row = 1
 
         Frame.__init__(self, master)
