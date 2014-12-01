@@ -258,10 +258,6 @@ class App(Frame):
         self.crateWidgets()
 
 
-def run_setting():
-    setting = Setting()
-
-
 def main():
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
