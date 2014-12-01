@@ -123,6 +123,7 @@ class App(Frame):
         self.addTask(title, message, task_type, date, time)
 
     def crateWidgets(self):
+        self.row = 1
 
         Style().configure("TButton", padding=(0, 3, 0, 3), font='serif 10')
 
@@ -240,7 +241,6 @@ class App(Frame):
         api = Api()
         self.api = api.get_api()
         #self.api = ''
-        self.row = 1
 
         Frame.__init__(self, master)
 
