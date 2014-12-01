@@ -171,7 +171,7 @@ class App(Frame):
             child.destroy()
         self.crateWidgets()
 
-    def createFrame(self, id, title, message, task_type, datetime):
+    def createFrame(self, title, message, task_type, datetime, id=''):
         self.row += 1
         # self.f1 = Frame(self.frame, bg="white")
         # self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
@@ -197,7 +197,7 @@ class App(Frame):
             "SELECT id, title, message, task_type, time FROM task WHERE api=%s", [self.api])
         for row in self.cur.fetchall():
             print row
-            self.createFrame(row[0], row[1], row[2], row[3], row[4])
+            self.createFrame(row[1], row[2], row[3], row[4], id=row[0])
 
     def addTask(self, title, message, task_type, date, time):
         print title, message, task_type, date, time
@@ -219,7 +219,8 @@ class App(Frame):
                             "VALUES (:api, :title, :message, :task_type, :time)", self.data)
         self.sq3.commit()
 
-        self.createFrame(title, message, task_type, date + ' ' + time + ':00')
+        #self.createFrame(title, message, task_type, date + ' ' + time + ':00')
+        self.clearFrame()
 
     def OnFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
