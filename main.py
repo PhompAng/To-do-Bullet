@@ -3,8 +3,11 @@ from ttk import Button, Style
 import MySQLdb
 import sqlite3
 
+
 class Api(object):
+
     """docstring for api"""
+
     def __init__(self):
         fo = open("api.txt", "r")
         self.api = StringVar()
@@ -62,7 +65,7 @@ class App(Frame):
         api = Api()
         api.set_api(self.api_entry.get())
         self.s.destroy()
-        self.getTask()
+        self.clearFrame()
 
     def setting(self):
         api = Api()
@@ -163,6 +166,11 @@ class App(Frame):
 
         self.getTask()
 
+    def clearFrame(self):
+        for child in self.frame.winfo_children():
+            child.destroy()
+        self.crateWidgets()
+
     def createFrame(self, id, title, message, task_type, datetime):
         self.row += 1
         # self.f1 = Frame(self.frame, bg="white")
@@ -218,7 +226,6 @@ class App(Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __init__(self, master=None):
-
 
         self.db = MySQLdb.connect(host="",  # your host, usually localhost
                                   user="",  # your username
