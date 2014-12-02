@@ -4,10 +4,9 @@ import default_conf
 
 class SQLite(object):
     """ SQLite connection and manipulation tools """
-    def __init__(self, db):
+    def __init__(self, db="db.db"):
         """ 
-        @param config   A dict of MySQL Connection (contain 'host', 'user', 'passwd', 'db' as a key)
-                        User default if this is not given by user
+        @param db  A database filename (use db.db) as a default
         """
         self.connection = sqlite3.connect(db)
         self.cursor = self.connection.cursor()
@@ -20,6 +19,15 @@ class SQLite(object):
         sql = "INSERT INTO task (api, title, message, task_type, time) VALUES (:api, :title, :message, :task_type, :time)"
         self.cursor.execute(sql, data)
         self.connection.commit()
+
+    def get_task(self, api):
+        """
+        Retrieve all task from database where given API_key is matched
+        @param api   A user's API key
+        """
+        sql = "SELECT id, title, message, task_type, time FROM task WHERE api=:api"
+        self.cursor.execute(sql, {'api': api})
+        return self.cursor.fetchall()
 
 class MySQL(object):
     """ MySQL connection and manipulation tools """
@@ -45,7 +53,7 @@ class MySQL(object):
 
     def get_task(self, api):
         """
-        Retrive all task from database where given API_key is matched
+        Retrieve all task from database where given API_key is matched
         @param api   A user's API key
         """
         sql = "SELECT id, title, message, task_type, time FROM task WHERE api=%s"

@@ -193,7 +193,7 @@ class App(Frame):
     def getTask(self):
         api = Api()
         self.api = api.get_api()
-        for row in self.mysql.get_task(self.api):
+        for row in self.sqlite.get_task(self.api):
             print row
             self.createFrame(row[1], row[2], row[3], row[4], id=row[0])
 
