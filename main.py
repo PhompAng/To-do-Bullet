@@ -47,7 +47,7 @@ class Task(Frame):
         self.delete = Label(
             self, text="X", bg='red', fg="white", justify=LEFT, font='serif 11')
 
-        self.delete.bind('<Button-1', self.delete_task)
+        self.delete.bind('<Button-1>', self.delete_task)
 
         self.delete.pack(in_=self, anchor=NE)
         self.title1.pack(in_=self, anchor=W, fill=Y)
