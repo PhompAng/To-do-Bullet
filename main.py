@@ -2,6 +2,7 @@ from Tkinter import *
 from ttk import Button, Style
 from db import *
 
+
 class Api(object):
 
     """docstring for api"""
@@ -34,16 +35,36 @@ class Task(Frame):
         Frame.__init__(self, parent, bg="white")
         #self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
+        self.id = id
+        self.datetime = datetime
+
         self.title1 = Label(
-            self, text=str(id) + '. ' + title, bg='white', justify=LEFT, font='serif 14', wraplengt=300)
+            self, text=str(id) + '. ' + title, bg='white', justify=LEFT, font='serif 14', wraplength=300)
         self.datetime1 = Label(
             self, text=datetime, bg='white', font='serif 10')
         self.message1 = Label(
-            self, text=message + task_type, bg="white", justify=LEFT, font='serif 10', wraplengt=300)
+            self, text=message + task_type, bg="white", justify=LEFT, font='serif 10', wraplength=300)
+        self.delete = Label(
+            self, text="X", bg='red', fg="white", justify=LEFT, font='serif 11')
 
-        self.title1.pack(in_=self, ancho=W, fill=Y)
+        self.delete.bind('<Button-1', self.delete_task)
+
+        self.delete.pack(in_=self, anchor=NE)
+        self.title1.pack(in_=self, anchor=W, fill=Y)
         self.message1.pack(in_=self, anchor=SW, fill=Y)
         self.datetime1.pack(in_=self, anchor=SE)
+
+    def delete_task(self, e):
+        mysql = MySQL()
+        sqlite = SQLite()
+        if self.datetime == '':
+            sqlite.delete_task(self.id)
+        else:
+            remote_id = sqlite.get_remote_id(self.id)
+            mysql.delete_task(remote_id)
+            sqlite.delete_task(remote_id)
+
+        self.destroy()
 
 
 class App(Frame):
