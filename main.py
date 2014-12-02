@@ -1,5 +1,5 @@
 from Tkinter import *
-from ttk import *
+from ttk import Button, Style
 from db import *
 
 
