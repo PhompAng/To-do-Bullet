@@ -62,8 +62,7 @@ class Task(Frame):
         else:
             remote_id = sqlite.get_remote_id(self.id)
             mysql.delete_task(remote_id)
-            sqlite.delete_task(remote_id)
-
+            sqlite.delete_task(self.id)
         self.destroy()
 
 
@@ -225,9 +224,13 @@ class App(Frame):
             'title': title,
             'message': message,
             'task_type': task_type,
-            'time': date + ' ' + time + ':00',
         }
-        self.mysql.insert_task(self.data)
+        if date == "" and time == "":
+            self.data['time'] = ""
+            self.data['remote_id'] = 0
+        else:
+            self.data['time'] = date + ' ' + time + ':00'
+            self.data['remote_id'] = self.mysql.insert_task(self.data)
         self.sqlite.insert_task(self.data)
 
         #self.createFrame(title, message, task_type, date + ' ' + time + ':00')

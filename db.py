@@ -16,7 +16,7 @@ class SQLite(object):
         Save a task to database 
         @param data   A dict of task data (api, title, message, task_type, time)
         """
-        sql = "INSERT INTO task (api, title, message, task_type, time) VALUES (:api, :title, :message, :task_type, :time)"
+        sql = "INSERT INTO task (api, title, message, task_type, time, remote_id) VALUES (:api, :title, :message, :task_type, :time, :remote_id)"
         self.cursor.execute(sql, data)
         self.connection.commit()
 
@@ -28,6 +28,24 @@ class SQLite(object):
         sql = "SELECT id, title, message, task_type, time FROM task WHERE api=:api"
         self.cursor.execute(sql, {'api': api})
         return self.cursor.fetchall()
+
+    def delete_task(self, id):
+        """
+        Delete a task from database
+        @param id   A task ID
+        """
+        sql = "DELETE FROM task WHERE id=:id"
+        self.cursor.execute(sql, {'id': id})
+        self.connection.commit()
+
+    def get_remote_id(self, local_id):
+        """
+        Get a remote ID of a task
+        @param local_id   A local task id
+        """
+        sql = "SELECT remote_id FROM task WHERE id=:id"
+        self.cursor.execute(sql, {'id': local_id})
+        return self.cursor.fetchone()[0]
 
 class MySQL(object):
     """ MySQL connection and manipulation tools """
@@ -50,6 +68,7 @@ class MySQL(object):
         sql = "INSERT INTO task (api, title, message, task_type, time) VALUES (%(api)s, %(title)s, %(message)s, %(task_type)s, %(time)s)"
         self.cursor.execute(sql, data)
         self.connection.commit()
+        return self.cursor.lastrowid
 
     def get_task(self, api):
         """
@@ -59,3 +78,12 @@ class MySQL(object):
         sql = "SELECT id, title, message, task_type, time FROM task WHERE api=%s"
         self.cursor.execute(sql, [api])
         return self.cursor.fetchall()
+
+    def delete_task(self, remote_id):
+        """
+        Delete a task from database
+        @param id   A task ID
+        """
+        sql = "DELETE FROM task WHERE id=%s"
+        self.cursor.execute(sql, [remote_id])
+        self.connection.commit()
