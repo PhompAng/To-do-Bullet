@@ -110,7 +110,7 @@ class App(Frame):
         self.datetime_time.grid(row=2, column=2, sticky=W)
 
         self.l = Button(self.t)
-        self.l["text"] = self.row
+        self.l["text"] = 'Add Task'
         self.l["command"] = self.get_newtext
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
 
@@ -121,6 +121,7 @@ class App(Frame):
         date = self.datetime_date.get()
         time = self.datetime_time.get()
         self.addTask(title, message, task_type, date, time)
+        self.t.destroy()
 
     def crateWidgets(self):
         self.row = 1
@@ -259,7 +260,7 @@ class App(Frame):
         self.menubar = Menu(self.master)
         self.master.config(menu=self.menubar)
 
-        filemenu = Menu(self.menubar)
+        filemenu = Menu(self.menubar, tearoff=0)
         filemenu.add_command(label="Setting", command=self.setting)
         self.menubar.add_cascade(label="File", menu=filemenu)
 
