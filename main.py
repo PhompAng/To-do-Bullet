@@ -1,8 +1,6 @@
 from Tkinter import *
 from ttk import Button, Style
-import MySQLdb
-import sqlite3
-
+from db import *
 
 class Api(object):
 
@@ -195,9 +193,7 @@ class App(Frame):
     def getTask(self):
         api = Api()
         self.api = api.get_api()
-        self.cur.execute(
-            "SELECT id, title, message, task_type, time FROM task WHERE api=%s", [self.api])
-        for row in self.cur.fetchall():
+        for row in self.mysql.get_task(self.api):
             print row
             self.createFrame(row[1], row[2], row[3], row[4], id=row[0])
 
@@ -210,16 +206,8 @@ class App(Frame):
             'task_type': task_type,
             'time': date + ' ' + time + ':00',
         }
-        self.add = ("INSERT INTO task "
-                    "(api, title, message, task_type, time) "
-                    "VALUES (%(api)s, %(title)s, %(message)s, %(task_type)s, %(time)s)")
-        self.cur.execute(self.add, self.data)
-        self.db.commit()
-
-        self.sq3cur.execute("INSERT INTO task "
-                            "(api, title, message, task_type, time) "
-                            "VALUES (:api, :title, :message, :task_type, :time)", self.data)
-        self.sq3.commit()
+        self.mysql.insert_task(self.data)
+        self.sqlite.insert_task(self.data)
 
         #self.createFrame(title, message, task_type, date + ' ' + time + ':00')
         self.clearFrame()
@@ -230,14 +218,8 @@ class App(Frame):
 
     def __init__(self, master=None):
 
-        self.db = MySQLdb.connect(host="",  # your host, usually localhost
-                                  user="",  # your username
-                                  passwd="",  # your password
-                                  db="")  # name of the data base
-        self.cur = self.db.cursor()
-
-        self.sq3 = sqlite3.connect('db.db')
-        self.sq3cur = self.sq3.cursor()
+        self.mysql = MySQL()
+        self.sqlite = SQLite('db.db')
 
         api = Api()
         self.api = api.get_api()
