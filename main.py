@@ -288,7 +288,7 @@ class App(Frame):
         Style().configure('.', font=('Arial', 10))
         #Style().configure("TButton", padding=(0, 3, 0, 3))
 
-        self.canvas = Canvas(master, borderwidth=0, background="#e5e5e5")
+        self.canvas = Canvas(master, borderwidth=0, background="#e5e5e5", width=335)
         self.frame = Frame(self.canvas, background="#b4b4b4")
         self.vsb = Scrollbar(
             master, orient="vertical", command=self.canvas.yview)
@@ -329,3 +329,4 @@ def main():
     root.destroy()
 
 main()
+
