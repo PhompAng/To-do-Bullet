@@ -112,8 +112,9 @@ class App(Frame):
 
     def setting(self):
         api = Api()
-        self.s = Toplevel(self)
+        self.s = Toplevel(self, padx=10, pady=10)
         self.s.title("Update API Key")
+        self.s.resizable(0, 0)
         val = StringVar()
         val.set(api.get_api())
         self.api_label = Label(self.s, text="API Key")
@@ -121,7 +122,7 @@ class App(Frame):
         self.api_entry = Entry(self.s, textvariable=val)
         self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E)
         self.save_btn = Button(self.s, text="Save", command=self.save)
-        self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E)
+        self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E, pady=5)
 
     def newtext(self, task_type, values=dict(), btn='Add Task'):
         if values == {}:
@@ -132,8 +133,9 @@ class App(Frame):
             values['time'] = StringVar()
             values['time'].set('13:37')
         self.task_type = task_type
-        self.t = Toplevel(self)
+        self.t = Toplevel(self, padx=10, pady=10)
         self.t.title("Add a task")
+        self.t.resizable(0, 0)
         # self.t.geometry("300x200+120+120")
 
         self.title_label = Label(self.t, text="Title")
@@ -160,7 +162,7 @@ class App(Frame):
         self.l = Button(self.t)
         self.l["text"] = btn
         self.l["command"] = self.get_newtext
-        self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
+        self.l.grid(row=3, columnspan=3, sticky=N + E + W + S, pady=5)
 
     def get_newtext(self):
         title = self.title.get()
@@ -207,7 +209,7 @@ class App(Frame):
 
         self.new_file.grid(row=0, sticky=N + S + E + W, column=3)
 
-        self.QUIT = Button(self.frame, text="quit", command=quit)
+        self.QUIT = Button(self.frame, text="Quit", command=quit)
         self.QUIT.grid(row=1, columnspan=4, sticky=W + E)
 
         self.pack()
