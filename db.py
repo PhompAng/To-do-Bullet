@@ -19,6 +19,7 @@ class SQLite(object):
         sql = "INSERT INTO task (api, title, message, task_type, time, remote_id) VALUES (:api, :title, :message, :task_type, :time, :remote_id)"
         self.cursor.execute(sql, data)
         self.connection.commit()
+        return self.cursor.lastrowid
 
     def get_task(self, api):
         """

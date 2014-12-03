@@ -31,25 +31,34 @@ class Task(Frame):
 
     """docstring for Task"""
 
-    def __init__(self, parent, id, title, message, task_type, datetime):
+    def __init__(self, parent, id, title, message, task_type, datetime, window):
         Frame.__init__(self, parent, bg="white")
         #self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
         self.id = id
+        self.title = title
+        self.message = message
         self.datetime = datetime
+        self.task_type = task_type
+
+        self.window = window
 
         self.title1 = Label(
-            self, text=str(id) + '. ' + title, bg='white', justify=LEFT, font='serif 14', wraplength=300)
+            self, text=str(id) + '. ' + title, bg='white', justify=LEFT, wraplength=300)
         self.datetime1 = Label(
-            self, text=datetime, bg='white', font='serif 10')
+            self, text=datetime, bg='white')
         self.message1 = Label(
-            self, text=message + task_type, bg="white", justify=LEFT, font='serif 10', wraplength=300)
+            self, text=message + task_type, bg="white", justify=LEFT, wraplength=300)
         self.delete = Label(
-            self, text="X", bg='red', fg="white", justify=LEFT, font='serif 11')
+            self, text="X", bg='red', fg="white", justify=LEFT)
+        self.edit = Label(
+            self, text="Edit", bg='yellow', justify=LEFT)
 
         self.delete.bind('<Button-1>', self.delete_task)
+        self.edit.bind('<Button-1>', self.edit_task)
 
-        self.delete.pack(in_=self, anchor=NE)
+        self.delete.pack(in_=self, anchor=NE, side=RIGHT)
+        self.edit.pack(in_=self, anchor=NE, side=RIGHT)
         self.title1.pack(in_=self, anchor=W, fill=Y)
         self.message1.pack(in_=self, anchor=SW, fill=Y)
         self.datetime1.pack(in_=self, anchor=SE)
@@ -64,6 +73,22 @@ class Task(Frame):
             mysql.delete_task(remote_id)
             sqlite.delete_task(self.id)
         self.destroy()
+
+    def edit_task(self, e):
+        data = {
+            'title': StringVar(),
+            'message': StringVar(),
+            'date': StringVar(),
+            'time': StringVar()
+        }
+
+        data['title'].set(self.title)
+        data['message'].set(self.message)
+        data['date'].set(self.datetime.split()[0])
+        data['time'].set(self.datetime.split()[1][:-3])
+        self.delete_task(e)
+        self.window.newtext(self.task_type, data, 'Edit')
+
 
 
 class App(Frame):
@@ -97,38 +122,41 @@ class App(Frame):
         self.save_btn = Button(self.s, text="Save", command=self.save)
         self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E)
 
-    def newtext(self, task_type):
+    def newtext(self, task_type, values=dict(), btn='Add Task'):
+        if values == {}:
+            values['title'] = StringVar().set('')
+            values['message'] = StringVar().set('')
+            values['date'] = StringVar()
+            values['date'].set('2014-10-11')
+            values['time'] = StringVar()
+            values['time'].set('13:37')
         self.task_type = task_type
         self.t = Toplevel(self)
         # self.t.geometry("300x200+120+120")
 
         self.title_label = Label(self.t, text="Title")
         self.title_label.grid(row=0, column=0, sticky=W)
-        self.title = Entry(self.t)
+        self.title = Entry(self.t, textvariable=values['title'])
         self.title.grid(row=0, column=1, columnspan=2, sticky=W + E)
 
         self.message_label = Label(self.t, text="Message")
         self.message_label.grid(row=1, column=0, sticky=W)
-        self.message = Entry(self.t)
+        self.message = Entry(self.t, textvariable=values['message'])
         self.message.grid(row=1, column=1, columnspan=2, sticky=W + E)
 
         self.datetime_label = Label(self.t, text="Datetime")
         self.datetime_label.grid(row=2, column=0, sticky=W)
 
-        self.datetime_date_placehold = StringVar()
-        self.datetime_date_placehold.set("2014-10-11")
         self.datetime_date = Entry(
-            self.t, textvariable=self.datetime_date_placehold)
+            self.t, textvariable=values['date'])
         self.datetime_date.grid(row=2, column=1, sticky=W)
 
-        self.datetime_time_placehold = StringVar()
-        self.datetime_time_placehold.set("13:37")
         self.datetime_time = Entry(
-            self.t, textvariable=self.datetime_time_placehold)
+            self.t, textvariable=values['time'])
         self.datetime_time.grid(row=2, column=2, sticky=W)
 
         self.l = Button(self.t)
-        self.l["text"] = 'Add Task'
+        self.l["text"] = btn
         self.l["command"] = self.get_newtext
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S)
 
@@ -207,8 +235,7 @@ class App(Frame):
         # self.title1.pack(in_=self.f1, ancho=W, fill=Y)
         # self.message1.pack(in_=self.f1, anchor=SW, fill=Y)
         # self.datetime1.pack(in_=self.f1, anchor=SE)
-        Task(self.frame, id, title, message, task_type, datetime).grid(
-            row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
+        Task(self.frame, id, title, message, task_type, datetime, self).grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
     def getTask(self):
         api = Api()
@@ -231,10 +258,11 @@ class App(Frame):
         else:
             self.data['time'] = date + ' ' + time + ':00'
             self.data['remote_id'] = self.mysql.insert_task(self.data)
-        self.sqlite.insert_task(self.data)
+        task_id = self.sqlite.insert_task(self.data)
+        print task_id
 
-        #self.createFrame(title, message, task_type, date + ' ' + time + ':00')
-        self.clearFrame()
+        self.createFrame(title, message, task_type, date + " " + time + ":00", task_id)
+        #self.clearFrame()
 
     def OnFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
