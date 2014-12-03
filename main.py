@@ -113,6 +113,7 @@ class App(Frame):
     def setting(self):
         api = Api()
         self.s = Toplevel(self)
+        self.s.title("Update API Key")
         val = StringVar()
         val.set(api.get_api())
         self.api_label = Label(self.s, text="API Key")
@@ -132,6 +133,7 @@ class App(Frame):
             values['time'].set('13:37')
         self.task_type = task_type
         self.t = Toplevel(self)
+        self.t.title("Add a task")
         # self.t.geometry("300x200+120+120")
 
         self.title_label = Label(self.t, text="Title")
@@ -306,6 +308,7 @@ def main():
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
     root.geometry("370x600+150+150")
+    root.title('To-do Bullet (Dev.)')
 
     # menubar = Menu(root)
     # menu = Menu(menubar, tearoff=0)
