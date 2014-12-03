@@ -1,6 +1,9 @@
 from Tkinter import *
 from ttk import Style
-from PIL import ImageTk, Image
+try:
+    from PIL import ImageTK, Image
+except ImportError:
+    import ImageTk, Image
 from db import *
 
 
