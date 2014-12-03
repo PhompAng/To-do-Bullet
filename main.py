@@ -1,5 +1,6 @@
 from Tkinter import *
-from ttk import Button, Style
+from ttk import Style
+from PIL import ImageTk, Image
 from db import *
 
 
@@ -34,6 +35,8 @@ class Task(Frame):
     def __init__(self, parent, id, title, message, task_type, datetime, window):
         Frame.__init__(self, parent, bg="white")
         #self.f1.grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
+        delete_img = ImageTk.PhotoImage(Image.open("del.png"))
+        edit_img = ImageTk.PhotoImage(Image.open("edit.png"))
 
         self.id = id
         self.title = title
@@ -44,15 +47,17 @@ class Task(Frame):
         self.window = window
 
         self.title1 = Label(
-            self, text=str(id) + '. ' + title, bg='white', justify=LEFT, wraplength=300)
+            self, text=title, bg='white', justify=LEFT, wraplength=300, font="Arial 14")
         self.datetime1 = Label(
-            self, text=datetime, bg='white')
+            self, text=datetime, bg='white', font="Arial 10")
         self.message1 = Label(
-            self, text=message + task_type, bg="white", justify=LEFT, wraplength=300)
+            self, text=message + task_type, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
         self.delete = Label(
-            self, text="X", bg='red', fg="white", justify=LEFT)
+            self, image=delete_img, bg='#e74c3c', justify=LEFT)
+        self.delete.image = delete_img
         self.edit = Label(
-            self, text="Edit", bg='yellow', justify=LEFT)
+            self, image=edit_img, bg='#2ecc71', justify=LEFT)
+        self.edit.image = edit_img
 
         self.delete.bind('<Button-1>', self.delete_task)
         self.edit.bind('<Button-1>', self.edit_task)
@@ -118,10 +123,10 @@ class App(Frame):
         val = StringVar()
         val.set(api.get_api())
         self.api_label = Label(self.s, text="API Key")
-        self.api_label.grid(row=0, column=0, sticky=W)
-        self.api_entry = Entry(self.s, textvariable=val)
-        self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E)
-        self.save_btn = Button(self.s, text="Save", command=self.save)
+        self.api_label.grid(row=0, column=0, sticky=W, ipady=10)
+        self.api_entry = Entry(self.s, textvariable=val, width=30)
+        self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E, ipady=3)
+        self.save_btn = Button(self.s, text="Save", padx=10, pady=5, command=self.save)
         self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E, pady=5)
 
     def newtext(self, task_type, values=dict(), btn='Add Task'):
@@ -139,27 +144,27 @@ class App(Frame):
         # self.t.geometry("300x200+120+120")
 
         self.title_label = Label(self.t, text="Title")
-        self.title_label.grid(row=0, column=0, sticky=W)
+        self.title_label.grid(row=0, column=0, sticky=W, ipady=10)
         self.title = Entry(self.t, textvariable=values['title'])
-        self.title.grid(row=0, column=1, columnspan=2, sticky=W + E)
+        self.title.grid(row=0, column=1, columnspan=2, sticky=W + E, ipady=3)
 
         self.message_label = Label(self.t, text="Message")
-        self.message_label.grid(row=1, column=0, sticky=W)
+        self.message_label.grid(row=1, column=0, sticky=W, ipady=10)
         self.message = Entry(self.t, textvariable=values['message'])
-        self.message.grid(row=1, column=1, columnspan=2, sticky=W + E)
+        self.message.grid(row=1, column=1, columnspan=2, sticky=W + E, ipady=3)
 
         self.datetime_label = Label(self.t, text="Datetime")
-        self.datetime_label.grid(row=2, column=0, sticky=W)
+        self.datetime_label.grid(row=2, column=0, sticky=W, ipady=10)
 
         self.datetime_date = Entry(
             self.t, textvariable=values['date'])
-        self.datetime_date.grid(row=2, column=1, sticky=W)
+        self.datetime_date.grid(row=2, column=1, sticky=W, ipady=3)
 
         self.datetime_time = Entry(
             self.t, textvariable=values['time'])
-        self.datetime_time.grid(row=2, column=2, sticky=W)
+        self.datetime_time.grid(row=2, column=2, sticky=W, ipady=3)
 
-        self.l = Button(self.t)
+        self.l = Button(self.t, padx=10, pady=5)
         self.l["text"] = btn
         self.l["command"] = self.get_newtext
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S, pady=5)
@@ -174,43 +179,39 @@ class App(Frame):
         self.t.destroy()
 
     def crateWidgets(self):
-        self.row = 1
+        self.row = 0
 
         self.columnconfigure(0, pad=0)
         self.columnconfigure(1, pad=0)
         self.columnconfigure(2, pad=0)
         self.columnconfigure(3, pad=0)
 
-        self.rowconfigure(0, pad=5, minsize=30)
-        self.rowconfigure(1, pad=5, minsize=30)
-        self.rowconfigure(2, pad=5, minsize=30)
-
-        self.new_text = Button(self.frame)
+        self.new_text = Button(self.frame, padx=25, pady=10)
         self.new_text["text"] = "Text"
         self.new_text["command"] = lambda: self.newtext("text")
 
         self.new_text.grid(row=0, sticky=N + S + E + W, column=0)
 
-        self.new_list = Button(self.frame)
+        self.new_list = Button(self.frame, padx=25, pady=10)
         self.new_list["text"] = "List"
         self.new_list["command"] = lambda: self.newtext("list")
 
         self.new_list.grid(row=0, sticky=N + S + E + W, column=1)
 
-        self.new_link = Button(self.frame)
+        self.new_link = Button(self.frame, padx=25, pady=10)
         self.new_link["text"] = "Link"
         self.new_link["command"] = lambda: self.newtext("link")
 
         self.new_link.grid(row=0, sticky=N + S + E + W, column=2)
 
-        self.new_file = Button(self.frame)
+        self.new_file = Button(self.frame, padx=25, pady=10)
         self.new_file["text"] = "File"
         self.new_file["command"] = lambda: self.newtext("file")
 
         self.new_file.grid(row=0, sticky=N + S + E + W, column=3)
 
-        self.QUIT = Button(self.frame, text="Quit", command=quit)
-        self.QUIT.grid(row=1, columnspan=4, sticky=W + E)
+        #self.QUIT = Button(self.frame, text="Quit", command=quit, padx=25, pady=10, bg="#fafafa")
+        #self.QUIT.grid(row=1, columnspan=4, sticky=W + E)
 
         self.pack()
 
@@ -282,10 +283,9 @@ class App(Frame):
         Frame.__init__(self, master)
 
         Style().configure('.', font=('Arial', 10))
-        Style().configure("TButton", padding=(0, 3, 0, 3))
+        #Style().configure("TButton", padding=(0, 3, 0, 3))
 
-        self.canvas = Canvas(
-            master, borderwidth=0, background="#e5e5e5", width=350)
+        self.canvas = Canvas(master, borderwidth=0, background="#e5e5e5")
         self.frame = Frame(self.canvas, background="#b4b4b4")
         self.vsb = Scrollbar(
             master, orient="vertical", command=self.canvas.yview)
@@ -301,6 +301,7 @@ class App(Frame):
 
         filemenu = Menu(self.menubar, tearoff=0)
         filemenu.add_command(label="Setting", command=self.setting)
+        filemenu.add_command(label="Quit", command=quit)
         self.menubar.add_cascade(label="File", menu=filemenu)
 
         self.crateWidgets()
@@ -309,7 +310,7 @@ class App(Frame):
 def main():
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
-    root.geometry("370x600+150+150")
+    root.geometry("335x600+150+150")
     root.title('To-do Bullet (Dev.)')
 
     # menubar = Menu(root)
