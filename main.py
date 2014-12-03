@@ -172,8 +172,6 @@ class App(Frame):
     def crateWidgets(self):
         self.row = 1
 
-        Style().configure("TButton", padding=(0, 3, 0, 3), font='serif 10')
-
         self.columnconfigure(0, pad=0)
         self.columnconfigure(1, pad=0)
         self.columnconfigure(2, pad=0)
@@ -278,6 +276,9 @@ class App(Frame):
         #self.api = ''
 
         Frame.__init__(self, master)
+
+        Style().configure('.', font=('Arial', 10))
+        Style().configure("TButton", padding=(0, 3, 0, 3))
 
         self.canvas = Canvas(
             master, borderwidth=0, background="#e5e5e5", width=350)
