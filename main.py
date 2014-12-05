@@ -107,21 +107,26 @@ class App(Frame):
     """docstring for App"""
 
     def paste(self):
+        """Override Paste Shortcut"""
         self.entry.event_generate('<Control-v>')
 
     def cut(self):
+        """Override Cut Shortcut"""
         self.entry.event_generate('<Control-x>')
 
     def copy(self):
+        """Override Copy Shortcut"""
         self.entry.event_generate('<Control-c>')
 
     def save(self):
+        """Save User's API Key in Setting"""
         api = Api()
         api.set_api(self.api_entry.get())
         self.s.destroy()
         self.clear_frame()
 
     def setting(self):
+        """Create Setting Window"""
         api = Api()
         val = StringVar()
         val.set(api.get_api())
@@ -137,6 +142,12 @@ class App(Frame):
         self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E, pady=5)
 
     def new_task(self, task_type, values=dict(), btn='Add Task'):
+        """
+        Create "Add a task" Window
+        @param task_type Get type of task
+                value A dict of task data (title, message, date, time)
+                btn Text display in Button
+        """
         if values == {}:
             values['title'] = StringVar().set('')
             values['message'] = StringVar().set('')
@@ -173,6 +184,7 @@ class App(Frame):
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S, pady=5)
 
     def get_new_task(self):
+        """Get data from "Add a task" Window and add task"""
         title = self.title.get()
         message = self.message.get()
         task_type = self.task_type
@@ -183,6 +195,7 @@ class App(Frame):
         self.t.destroy()
 
     def create_widget(self):
+        """Create main window program"""
         self.row = 0
 
         self.columnconfigure(0, pad=0)
@@ -219,15 +232,18 @@ class App(Frame):
         self.get_task()
 
     def clear_frame(self):
+        """Clear main window and refresh task"""
         for child in self.frame.winfo_children():
             child.destroy()
         self.create_widget()
 
     def create_frame(self, title, message, task_type, datetime, id=''):
+        """Create Task Frame on main window"""
         self.row += 1
         Task(self.frame, id, title, message, task_type, datetime, self).grid(row=self.row, columnspan=4, sticky=W + E, pady=(0, 2))
 
     def get_task(self):
+        """Get All User's Task"""
         api = Api()
         self.api = api.get_api()
         for row in self.sqlite.get_task(self.api):
@@ -236,6 +252,7 @@ class App(Frame):
         print '---------------------------------------------------------------'
 
     def add_task(self, title, message, task_type, date, time):
+        """Add task to database"""
         print title, message, task_type, date, time
         print '---------------------------------------------------------------'
 
@@ -260,6 +277,7 @@ class App(Frame):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __init__(self, master=None):
+        """create database connection and init App frame and Canvas"""
 
         self.mysql = MySQL()
         self.sqlite = SQLite('db.db')
@@ -293,6 +311,7 @@ class App(Frame):
 
 
 def main():
+    """init program"""
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
     root.geometry("335x600+150+150")
