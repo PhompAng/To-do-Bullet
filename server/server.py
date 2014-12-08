@@ -2,6 +2,7 @@ from pushbullet import PushBullet
 from time import strftime
 import MySQLdb
 import config
+import ast
 
 class Database(object):
     """ A Connection to main database """
@@ -47,8 +48,16 @@ class Task(object):
     def push(self):
         """ Push a task """
         p = PushBullet(self.api)
-        devices = p.getDevices()
-        p.pushNote(devices[0]["tdb"], self.title, self.message)
+        if self.type == 'text':
+            success, push = p.push_note(self.title, self.message)
+        elif self.type == 'list':
+            self.message = ast.literal_eval(self.message)
+            self.message = [x.strip() for x in self.message]
+            success, push = p.push_list(self.title, self.message)
+        elif self.type == 'link':
+            success, push = p.push_link(self.title, self.message)
+        else:
+            success, push = p.push_file(file_url=self.message, file_name="cat.jpg", file_type="image/jpeg")
 
 def main():
     database = Database()
