@@ -5,6 +5,7 @@ try:
 except ImportError:
     import ImageTk, Image
 from db import *
+import datetime as dt
 
 
 class Api(object):
@@ -44,7 +45,16 @@ class Task(Frame):
     """Task card"""
 
     def __init__(self, parent, id, title, message, task_type, datetime, window):
-        Frame.__init__(self, parent, bg="white")
+        if dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S') > dt.datetime.now():
+            Frame.__init__(self, parent, bg="white")
+            self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=300, font="Arial 14")
+            self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10")
+            self.message1 = Label(self, text=message + task_type, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
+        else:
+            Frame.__init__(self, parent)
+            self.title1 = Label(self, text=title, justify=LEFT, wraplength=300, font="Arial 14")
+            self.datetime1 = Label(self, text=datetime, font="Arial 10")
+            self.message1 = Label(self, text=message + task_type, justify=LEFT, wraplength=300, font="Arial 10")
 
         delete_img = ImageTk.PhotoImage(Image.open("del.png"))
         edit_img = ImageTk.PhotoImage(Image.open("edit.png"))
@@ -57,9 +67,6 @@ class Task(Frame):
 
         self.window = window
 
-        self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=300, font="Arial 14")
-        self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10")
-        self.message1 = Label(self, text=message + task_type, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
         self.delete = Label(self, image=delete_img, bg='#e74c3c', justify=LEFT)
         self.delete.image = delete_img
         self.edit = Label(self, image=edit_img, bg='#2ecc71', justify=LEFT)
