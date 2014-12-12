@@ -49,12 +49,12 @@ class Task(Frame):
             Frame.__init__(self, parent, bg="white")
             self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=300, font="Arial 14")
             self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10")
-            self.message1 = Label(self, text=message + task_type, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
+            self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
         else:
             Frame.__init__(self, parent)
             self.title1 = Label(self, text=title, justify=LEFT, wraplength=300, font="Arial 14")
-            self.datetime1 = Label(self, text=datetime, font="Arial 10")
-            self.message1 = Label(self, text=message + task_type, justify=LEFT, wraplength=300, font="Arial 10")
+            self.datetime1 = Label(self, text=datetime, font="Arial 10", fg="red")
+            self.message1 = Label(self, text=message, justify=LEFT, wraplength=300, font="Arial 10")
 
         delete_img = ImageTk.PhotoImage(Image.open("del.png"))
         edit_img = ImageTk.PhotoImage(Image.open("edit.png"))
@@ -73,7 +73,11 @@ class Task(Frame):
         self.edit.image = edit_img
 
         self.delete.bind('<Button-1>', self.delete_task)
+        self.delete.bind("<Enter>", lambda event, h=self.delete: h.configure(bg="#B83C30"))
+        self.delete.bind("<Leave>", lambda event, h=self.delete: h.configure(bg="#e74c3c"))
         self.edit.bind('<Button-1>', self.edit_task)
+        self.edit.bind("<Enter>", lambda event, h=self.edit: h.configure(bg="#25A65C"))
+        self.edit.bind("<Leave>", lambda event, h=self.edit: h.configure(bg="#2ecc71"))
 
         self.delete.pack(in_=self, anchor=NE, side=RIGHT)
         self.edit.pack(in_=self, anchor=NE, side=RIGHT)
@@ -143,7 +147,7 @@ class App(Frame):
 
         self.api_label = Label(self.s, text="API Key")
         self.api_label.grid(row=0, column=0, sticky=W, ipady=10)
-        self.api_entry = Entry(self.s, textvariable=val, width=30)
+        self.api_entry = Entry(self.s, textvariable=val, width=40)
         self.api_entry.grid(row=0, column=1, columnspan=2, sticky=W + E, ipady=3)
         self.save_btn = Button(self.s, text="Save", padx=10, pady=5, command=self.save)
         self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E, pady=5)
@@ -210,29 +214,33 @@ class App(Frame):
         self.columnconfigure(2, pad=0)
         self.columnconfigure(3, pad=0)
 
-        self.new_text = Button(self.frame, padx=25, pady=10)
+        self.new_text = Button(self.frame, padx=25, pady=10, bg="white", borderwidth=0)
         self.new_text["text"] = "Text"
         self.new_text["command"] = lambda: self.new_task("text")
+        self.new_text.bind("<Enter>", lambda event, h=self.new_text: h.configure(bg="#cccccc"))
+        self.new_text.bind("<Leave>", lambda event, h=self.new_text: h.configure(bg="#ffffff"))
+        self.new_text.grid(row=0, sticky=N + S + E + W, column=0, pady=(0, 2))
 
-        self.new_text.grid(row=0, sticky=N + S + E + W, column=0)
-
-        self.new_list = Button(self.frame, padx=25, pady=10)
+        self.new_list = Button(self.frame, padx=25, pady=10, bg="white", borderwidth=0)
         self.new_list["text"] = "List"
         self.new_list["command"] = lambda: self.new_task("list")
+        self.new_list.bind("<Enter>", lambda event, h=self.new_list: h.configure(bg="#cccccc"))
+        self.new_list.bind("<Leave>", lambda event, h=self.new_list: h.configure(bg="#ffffff"))
+        self.new_list.grid(row=0, sticky=N + S + E + W, column=1, pady=(0, 2))
 
-        self.new_list.grid(row=0, sticky=N + S + E + W, column=1)
-
-        self.new_link = Button(self.frame, padx=25, pady=10)
+        self.new_link = Button(self.frame, padx=25, pady=10, bg="white", borderwidth=0)
         self.new_link["text"] = "Link"
         self.new_link["command"] = lambda: self.new_task("link")
+        self.new_link.bind("<Enter>", lambda event, h=self.new_link: h.configure(bg="#cccccc"))
+        self.new_link.bind("<Leave>", lambda event, h=self.new_link: h.configure(bg="#ffffff"))
+        self.new_link.grid(row=0, sticky=N + S + E + W, column=2, pady=(0, 2))
 
-        self.new_link.grid(row=0, sticky=N + S + E + W, column=2)
-
-        self.new_file = Button(self.frame, padx=25, pady=10)
+        self.new_file = Button(self.frame, padx=25, pady=10, bg="white", borderwidth=0)
         self.new_file["text"] = "File"
         self.new_file["command"] = lambda: self.new_task("file")
-
-        self.new_file.grid(row=0, sticky=N + S + E + W, column=3)
+        self.new_file.bind("<Enter>", lambda event, h=self.new_file: h.configure(bg="#cccccc"))
+        self.new_file.bind("<Leave>", lambda event, h=self.new_file: h.configure(bg="#ffffff"))
+        self.new_file.grid(row=0, sticky=N + S + E + W, column=3, pady=(0, 2))
 
         self.pack()
 
@@ -296,8 +304,8 @@ class App(Frame):
 
         Style().configure('.', font=('Arial', 10))
 
-        self.canvas = Canvas(master, borderwidth=0, background="#e5e5e5", width=335)
-        self.frame = Frame(self.canvas, background="#b4b4b4")
+        self.canvas = Canvas(master, borderwidth=0, background="white", width=320)
+        self.frame = Frame(self.canvas, background="#cccccc")
         self.vsb = Scrollbar(master, orient="vertical", command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vsb.set)
         self.vsb.pack(side="right", fill="y")
@@ -321,7 +329,7 @@ def main():
     """init program"""
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
-    root.geometry("335x600+150+150")
+    root.geometry("320x600+150+150")
     root.title('To-do Bullet (Dev.)')
 
     app = App(master=None)
