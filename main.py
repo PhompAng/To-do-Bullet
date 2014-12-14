@@ -112,8 +112,12 @@ class Task(Frame):
 
         data['title'].set(self.title)
         data['message'].set(self.message)
-        data['date'].set(self.datetime.split()[0])
-        data['time'].set(self.datetime.split()[1][:-3])
+        if self.datetime == '':
+            data['date'].set('')
+            data['time'].set('')
+        else:
+            data['date'].set(self.datetime.split()[0])
+            data['time'].set(self.datetime.split()[1][:-3])
         self.delete_task(e)
         self.window.new_task(self.task_type, data, 'Edit Task')
 
