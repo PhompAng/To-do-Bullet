@@ -1,16 +1,19 @@
 from Tkinter import *
 from ttk import Style
 import platform
-if platform.system() != "Windows":
+import tkMessageBox
+if platform.system() != "windows":
     try:
         import ImageTk, Image
     except ImportError:
         tkMessageBox.showerror('Error!', 'Python Imaging Library (PIL) is required!')
+        exit(1)
 else:
     try:
         from PIL import ImageTK, Image
     except ImportError:
         tkMessageBox.showerror('Error!', 'Python Imaging Library (PIL) is required!')
+        exit(1)
 from db import *
 import datetime as dt
 
