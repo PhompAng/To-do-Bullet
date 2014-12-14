@@ -53,6 +53,7 @@ class Task(object):
         elif self.type == 'list':
             self.message = ast.literal_eval(self.message)
             self.message = [x.strip() for x in self.message]
+            self.message = map(str, self.message)
             success, push = p.push_list(self.title, self.message)
         elif self.type == 'link':
             success, push = p.push_link(self.title, self.message)
