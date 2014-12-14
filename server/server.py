@@ -13,7 +13,8 @@ class Database(object):
             host = credential['host'],
             user = credential['username'],
             passwd = credential['password'],
-            db = credential['db']
+            db = credential['db'],
+            charset='utf8'
         )
         self.cursor = self.connection.cursor()
 
