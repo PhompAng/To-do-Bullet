@@ -2,7 +2,6 @@ from pushbullet import PushBullet
 from time import strftime
 import MySQLdb
 import config
-import ast
 
 class Database(object):
     """ A Connection to main database """
@@ -51,9 +50,7 @@ class Task(object):
         if self.type == 'text':
             success, push = p.push_note(self.title, self.message)
         elif self.type == 'list':
-            self.message = ast.literal_eval(self.message)
-            self.message = [x.strip() for x in self.message]
-            self.message = map(str, self.message)
+            self.message = self.message.split(',')
             success, push = p.push_list(self.title, self.message)
         elif self.type == 'link':
             success, push = p.push_link(self.title, self.message)

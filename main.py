@@ -16,6 +16,9 @@ else:
         exit(1)
 from db import *
 import datetime as dt
+import webbrowser
+import urllib
+import cStringIO
 
 
 class Api(object):
@@ -59,18 +62,36 @@ class Task(Frame):
             Frame.__init__(self, parent, bg="white")
             self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
             self.datetime1 = Label(self, text='', bg='white', font="Arial 10")
-            self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=220, font="Arial 10")
         else:
             if dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S') > dt.datetime.now():
                 Frame.__init__(self, parent, bg="white")
                 self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
                 self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10")
-                self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=220, font="Arial 10")
             else:
                 Frame.__init__(self, parent)
-                self.title1 = Label(self, text=title, justify=LEFT, wraplength=220, font="Arial 14")
-                self.datetime1 = Label(self, text=datetime, font="Arial 10", fg="red")
-                self.message1 = Label(self, text=message, justify=LEFT, wraplength=220, font="Arial 10")
+                self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
+                self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10", fg="red")
+
+
+        if task_type == 'text':
+            self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=220, font="Arial 10")
+        elif task_type == 'list':
+            message = message.split(',')
+            out = ''
+            for data in message:
+                out += '- ' + data + '\n'
+            self.message1 = Label(self, text=out, bg="white", justify=LEFT, wraplength=220, font="Arial 10")
+        elif task_type == "link":
+            self.message1 = Label(self, text=message, bg="white", fg="blue", justify=LEFT, wraplength=220, font="Arial 10")
+            self.message1.bind("<Button-1>", lambda event, link=message: self.open_link(event, link))
+        else:
+            web_sock = urllib.urlopen(message)
+            imgdata = cStringIO.StringIO(web_sock.read())
+            img_ori = Image.open(imgdata)
+            resize = img_ori.resize((250, 250), Image.ANTIALIAS)
+            img = ImageTk.PhotoImage(resize)
+            self.message1 = Label(self, image=img, bg="white", justify=LEFT, width=250)
+            self.message1.image = img
 
         delete_img = ImageTk.PhotoImage(Image.open("del.png"))
         edit_img = ImageTk.PhotoImage(Image.open("edit.png"))
@@ -130,6 +151,9 @@ class Task(Frame):
             data['time'].set(self.datetime.split()[1][:-3])
         self.delete_task(e)
         self.window.new_task(self.task_type, data, 'Edit Task', disable=True)
+
+    def open_link(self, event, link):
+        webbrowser.open_new(link)
 
 
 
