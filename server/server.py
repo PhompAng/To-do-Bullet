@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from pushbullet import PushBullet
 from time import strftime
 import MySQLdb
