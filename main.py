@@ -173,7 +173,7 @@ class App(Frame):
             values['title'] = StringVar().set('')
             values['message'] = StringVar().set('')
             values['date'] = StringVar()
-            values['date'].set('2014-10-11')
+            values['date'].set('2014-10-30')
             values['time'] = StringVar()
             values['time'].set('13:37')
         self.task_type = task_type
@@ -287,7 +287,7 @@ class App(Frame):
             'message': message,
             'task_type': task_type,
         }
-        if date == "" and time == "":
+        if (date == "" and time == "") or (date == '2014-10-30' and time == '13:37'):
             self.data['time'] = ""
             self.data['remote_id'] = 0
         else:
@@ -295,7 +295,8 @@ class App(Frame):
             self.data['remote_id'] = self.mysql.insert_task(self.data)
         task_id = self.sqlite.insert_task(self.data)
 
-        self.create_frame(title, message, task_type, date + " " + time + ":00", task_id)
+
+        self.create_frame(self.data['title'], self.data['message'], self.data['task_type'], self.data['time'], task_id)
 
     def OnFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
