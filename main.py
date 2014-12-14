@@ -57,20 +57,20 @@ class Task(Frame):
     def __init__(self, parent, id, title, message, task_type, datetime, window):
         if datetime == '' or datetime == ' :00':
             Frame.__init__(self, parent, bg="white")
-            self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=300, font="Arial 14")
+            self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
             self.datetime1 = Label(self, text='', bg='white', font="Arial 10")
-            self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
+            self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=220, font="Arial 10")
         else:
             if dt.datetime.strptime(datetime, '%Y-%m-%d %H:%M:%S') > dt.datetime.now():
                 Frame.__init__(self, parent, bg="white")
-                self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=300, font="Arial 14")
+                self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
                 self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10")
-                self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=300, font="Arial 10")
+                self.message1 = Label(self, text=message, bg="white", justify=LEFT, wraplength=220, font="Arial 10")
             else:
                 Frame.__init__(self, parent)
-                self.title1 = Label(self, text=title, justify=LEFT, wraplength=300, font="Arial 14")
+                self.title1 = Label(self, text=title, justify=LEFT, wraplength=220, font="Arial 14")
                 self.datetime1 = Label(self, text=datetime, font="Arial 10", fg="red")
-                self.message1 = Label(self, text=message, justify=LEFT, wraplength=300, font="Arial 10")
+                self.message1 = Label(self, text=message, justify=LEFT, wraplength=220, font="Arial 10")
 
         delete_img = ImageTk.PhotoImage(Image.open("del.png"))
         edit_img = ImageTk.PhotoImage(Image.open("edit.png"))
