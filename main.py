@@ -68,7 +68,7 @@ class Task(Frame):
                 self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
                 self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10")
             else:
-                Frame.__init__(self, parent)
+                Frame.__init__(self, parent, bg="white")
                 self.title1 = Label(self, text=title, bg='white', justify=LEFT, wraplength=220, font="Arial 14")
                 self.datetime1 = Label(self, text=datetime, bg='white', font="Arial 10", fg="red")
 
