@@ -153,7 +153,7 @@ class Task(Frame):
             data['date'].set(self.datetime.split()[0])
             data['time'].set(self.datetime.split()[1][:-3])
         self.delete_task(e)
-        self.window.new_task(self.task_type, data, 'Edit Task', disable=True)
+        self.window.new_task(self.task_type, data, 'Edit Task')
 
     def open_link(self, event, link):
         webbrowser.open_new(link)
@@ -199,7 +199,7 @@ class App(Frame):
         self.save_btn = Button(self.s, text="Save", padx=10, pady=5, command=self.save)
         self.save_btn.grid(row=1, column=0, columnspan=3, sticky=W + E, pady=5)
 
-    def new_task(self, task_type, values=dict(), btn='Add Task', disable=False):
+    def new_task(self, task_type, values=dict(), btn='Add Task'):
         """
         Create "Add a task" Window
         @param task_type Get type of task
@@ -240,10 +240,6 @@ class App(Frame):
         self.l["text"] = btn
         self.l["command"] = self.get_new_task
         self.l.grid(row=3, columnspan=3, sticky=N + E + W + S, pady=5)
-
-        if disable:
-            self.t.protocol("WM_DELETE_WINDOW", exit)
-            self.t.overrideredirect(1)
 
     def get_new_task(self):
         """Get data from "Add a task" Window and add task"""
