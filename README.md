@@ -22,7 +22,7 @@ First of all, you'll need to setup your PushBullet account and install its clien
 6. Try adding a task with date and time set to the future (If no time is set or it set to the past, no notification will be sent).
 
 ##### Adding a single task
-1. Click on "Task" button.
+1. Click on "Text" button.
 2. Type your desired title and message.
 3. Click "Add Task" button.
 
@@ -32,11 +32,11 @@ First of all, you'll need to setup your PushBullet account and install its clien
 3. Click "Add Task" button.
 
 ##### Adding a task with link
-1. Click on "List" button.
+1. Click on "Link" button.
 2. Type you desired title and put the URL of the destination website in the message field.
 3. Click "Add Task" button.
 
 ##### Adding a task with file
-1. Click on "List" button.
+1. Click on "File" button.
 2. Type you desired title and put the URL of the file in the message field.
 3. Click "Add Task" button.
